@@ -25,8 +25,8 @@
     </div>
     <div class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Account</a></li>
-        <li><a href="/priv/new_deposit.html">Deposit</a></li>
+        <li><a href="/priv">Account</a></li>
+        <li class="active"><a href="/priv/new_deposit.html">Deposit</a></li>
         <li><a href="/priv/withdraw.html">Withdraw</a></li>
       </ul>
     </div><!--/.nav-collapse -->
@@ -35,16 +35,50 @@
 
 <div class="container">
   
-  <div class="text-center">
-    <h1>BITCH</h1>
-    <p class="lead">I could teach yo ass how to get that $ son with some fucking bitcoins.</p>
+  <div class="text-center" id="please-deposit">
+    <h1>DEPOSITING FUNDS</h1>
+    <p class="lead">Please send bitcoins to</p> <strong>
+        {{ address }}
+</strong><br><div class="text-center" id="bitcoinaddress"></div>
+  </div>
+  <div class="text-center" id="thankyou">
+    <h1>Thank you</h1>
+    <p class="lead">Your account has been credited <div id="amount-credit"></div></div>
   </div>
   
 </div><!-- /.container -->
 
+
 	<!-- script references -->
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
 		<script src="js/bootstrap.min.js"></script>
+		<script src="js/jquery.qrcode.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
+
+<script>
+function checkAddr() {
+    $.get("/priv/bitcoin_deposit_check.json?pub={{ address }}", function( data ) {
+        if (data == "no") {
+            setTimeout(checkAddr, 777);
+        } else {
+            $("#amount-credit").html(data);
+            $("#please-deposit").hide();
+            $("#thankyou").show();
+        }
+    });
+}
+setTimeout(checkAddr, 10000);
+
+$(document).ready(function() {
+$("#bitcoinaddress").qrcode({
+				render: "canvas",
+				ecLevel: "Q",
+				fill: "#000",
+				radius: 0.3,
+				quiet: 4,
+				text: "bitcoin:{{ address }}"
+			});
+
+});</script>
 	</body>
 </html>

@@ -55,7 +55,7 @@ def privroot():
     return redirect('/pub')
   userobj = usr.first()
   if "index" in PRIV_DYNAMICS_AVAILABLE:
-    return render_template("priv/index.html", **dynamics.priv_sources["index"]())
+    return render_template("priv/index.html", **dynamics.priv_sources["index"](userobj))
   else:
     return render_template("priv/index.html")
 
@@ -68,7 +68,7 @@ def send_priv(patha):
   path = patha.replace("..", ".")
   dyn = path.split('.')[0]
   if dyn in PRIV_DYNAMICS_AVAILABLE:
-    return render_template("priv/"+path, **dynamics.priv_sources[dyn]())
+    return render_template("priv/"+path, **dynamics.priv_sources[dyn](userobj))
   elif dyn.startswith("css") or dyn.startswith("js"):
     return send_from_directory("templates/priv/", path)
   else:
